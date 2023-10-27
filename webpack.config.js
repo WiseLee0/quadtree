@@ -1,6 +1,8 @@
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const path = require("path");
 const webpack = require("webpack");
+const CopyPlugin = require("copy-webpack-plugin");
+
 /**
  * @type {import('webpack').Configuration}
  */
@@ -15,6 +17,11 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: path.join(__dirname, "./index.html"),
     }),
+    new CopyPlugin({
+      patterns: [
+        { from: 'node_modules/canvaskit-wasm/bin/canvaskit.wasm' }
+      ],
+    })
   ],
   module: {
     rules: [
@@ -48,11 +55,16 @@ module.exports = {
   },
   resolve: {
     extensions: [".mjs", ".js", ".json", ".jsx", ".ts", ".tsx"],
+    fallback: {
+      path: require.resolve("path-browserify"),
+      fs: false
+    }
   },
   mode: "development",
   cache: {
     type: 'filesystem',
   },
+  target: 'web',
   devServer: {
     client: {
       logging: "verbose",
